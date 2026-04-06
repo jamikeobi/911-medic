@@ -1,0 +1,167 @@
+<app-navbar></app-navbar>
+
+<div class="hospital-booking-page min-vh-100 position-relative overflow-hidden text-light">
+  <div class="hospital-bg"></div>
+
+  <div class="container position-relative z-3 py-5">
+    <!-- Header -->
+    <div class="text-center mb-5">
+      <h1 class="display-4 fw-bold mb-4 text-white">Find Hospitals Near You</h1>
+      <p class="lead text-white-75 mb-4">
+        Browse and book appointments at trusted hospitals in Lagos
+      </p>
+    </div>
+
+    <!-- Area Filter -->
+    <div class="row justify-content-center mb-5">
+      <div class="col-md-8">
+        <div class="filter-section p-3 rounded">
+          <label class="text-white mb-2 fw-bold">Filter by Location:</label>
+          <div class="d-flex flex-wrap gap-2">
+            <button class="btn" [ngClass]="selectedArea === '' ? 'btn-primary' : 'btn-outline-light'" (click)="filterByArea('')">
+              All Areas
+            </button>
+            <button *ngFor="let area of areas" class="btn" [ngClass]="selectedArea === area ? 'btn-primary' : 'btn-outline-light'" (click)="filterByArea(area)">
+              {{ area }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage" class="alert alert-success alert-dismissible fade show text-center" role="alert">
+      <i class="bi bi-check-circle-fill me-2"></i> {{ successMessage }}
+      <button type="button" class="btn-close" (click)="successMessage = ''"></button>
+    </div>
+
+    <!-- Hospitals Grid -->
+    <div class="row g-4">
+      <div *ngFor="let hospital of filteredHospitals" class="col-md-6 col-lg-4">
+        <div class="hospital-card dashboard-card h-100">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <h4 class="text-white mb-2">{{ hospital.name }}</h4>
+              <span class="badge bg-info">{{ hospital.area }}</span>
+              <span class="badge bg-secondary ms-2">{{ hospital.location }}</span>
+            </div>
+            <div class="rating">
+              <i class="bi bi-star-fill text-warning"></i>
+              <span class="text-white">{{ hospital.rating }}</span>
+            </div>
+          </div>
+
+          <p class="text-white-75 small mb-2">
+            <i class="bi bi-telephone me-1"></i> {{ hospital.phone }}
+          </p>
+          
+          <div class="mb-3">
+            <strong class="text-white-75 small">Services:</strong>
+            <div class="mt-1">
+              <span *ngFor="let service of hospital.services" class="badge bg-primary me-1 mb-1">
+                {{ service }}
+              </span>
+            </div>
+          </div>
+
+          <button class="btn btn-primary w-100 mt-auto" (click)="selectHospital(hospital)">
+            <i class="bi bi-calendar-check me-2"></i> Book Appointment
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="filteredHospitals.length === 0" class="text-center py-5">
+      <p class="text-white-50">No hospitals found in this area.</p>
+    </div>
+  </div>
+</div>
+
+<!-- Booking Modal -->
+<div class="modal fade" [class.show]="showBookingModal" [style.display]="showBookingModal ? 'block' : 'none'" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content bg-dark text-light border-secondary">
+      <div class="modal-header border-secondary">
+        <h5 class="modal-title">
+          <i class="bi bi-calendar-check me-2 text-primary"></i> Book Hospital Appointment
+        </h5>
+        <button type="button" class="btn-close btn-close-white" (click)="closeBookingModal()"></button>
+      </div>
+      <div class="modal-body" *ngIf="selectedHospital">
+        <div class="alert alert-info mb-3">
+          <i class="bi bi-hospital me-2"></i> Booking at: <strong>{{ selectedHospital.name }}</strong> ({{ selectedHospital.location }})
+        </div>
+
+        <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label text-white">Full Name *</label>
+              <input type="text" class="form-control" formControlName="patientName" [class.is-invalid]="submitted && f['patientName'].errors">
+              <div class="invalid-feedback">Full name is required</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label text-white">Email *</label>
+              <input type="email" class="form-control" formControlName="patientEmail" [class.is-invalid]="submitted && f['patientEmail'].errors">
+              <div class="invalid-feedback">Valid email is required</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label text-white">Phone Number *</label>
+              <input type="tel" class="form-control" formControlName="patientPhone" [class.is-invalid]="submitted && f['patientPhone'].errors">
+              <div class="invalid-feedback">Valid phone number is required</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label text-white">Reason for Visit *</label>
+              <select class="form-control" formControlName="reason" [class.is-invalid]="submitted && f['reason'].errors">
+                <option value="">Select reason</option>
+                <option value="consultation">General Consultation</option>
+                <option value="emergency">Emergency</option>
+                <option value="follow-up">Follow-up Appointment</option>
+                <option value="surgery">Surgery Consultation</option>
+                <option value="checkup">Routine Checkup</option>
+              </select>
+              <div class="invalid-feedback">Please select a reason</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label text-white">Preferred Date *</label>
+              <input type="date" class="form-control" formControlName="preferredDate" [class.is-invalid]="submitted && f['preferredDate'].errors">
+              <div class="invalid-feedback">Preferred date is required</div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label text-white">Preferred Time *</label>
+              <select class="form-control" formControlName="preferredTime" [class.is-invalid]="submitted && f['preferredTime'].errors">
+                <option value="">Select time</option>
+                <option value="morning">Morning (9:00 AM - 12:00 PM)</option>
+                <option value="afternoon">Afternoon (12:00 PM - 3:00 PM)</option>
+                <option value="evening">Evening (3:00 PM - 6:00 PM)</option>
+              </select>
+              <div class="invalid-feedback">Preferred time is required</div>
+            </div>
+
+            <div class="col-12">
+              <label class="form-label text-white">Additional Information</label>
+              <textarea class="form-control" rows="3" formControlName="additionalInfo" placeholder="Any specific symptoms, concerns, or questions..."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer border-secondary mt-4">
+            <button type="button" class="btn btn-secondary" (click)="closeBookingModal()">Cancel</button>
+            <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+              {{ isLoading ? 'Submitting...' : 'Submit Booking Request' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div class="modal-backdrop fade" [class.show]="showBookingModal" [style.display]="showBookingModal ? 'block' : 'none'"></div>
+
+<app-footer></app-footer>

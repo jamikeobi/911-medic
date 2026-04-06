@@ -1,0 +1,63 @@
+.hospital-booking-page {
+    background: #0a1f44;
+    position: relative;
+    min-height: 100vh;
+}
+
+.hospital-bg {
+    position: absolute;
+    inset: 0;
+background: linear-gradient(135deg, #0d6efd 0%, #c0392b 50%, #0d6efd 100%);    opacity: 0.12;
+    z-index: -1;
+}
+
+.filter-section {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hospital-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.hospital-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.rating {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+}
+
+.btn-outline-light {
+    border-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.btn-outline-light:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .filter-section .d-flex {
+        justify-content: center;
+    }
+
+    .btn-outline-light,
+    .btn-primary {
+        font-size: 0.8rem;
+        padding: 0.25rem 0.75rem;
+    }
+}

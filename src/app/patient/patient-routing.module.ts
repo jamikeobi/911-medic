@@ -5,14 +5,16 @@ import { PatientLoginComponent } from '../auth/patient-login/patient-login.compo
 import { PatientRegisterComponent } from '../auth/patient-register/patient-register.component';
 import { ConsultationBookingComponent } from './consultation-booking/consultation-booking.component';
 import { AmbulanceRequestComponent } from './ambulance-request/ambulance-request.component';
+import { HospitalBookingComponent } from './hospital-booking/hospital-booking.component';
 
 const routes: Routes = [
-  { path: '', component: DashboardComponent },                  // /patient → dashboard
-  { path: 'login', component: PatientLoginComponent },          // /patient/login
-  { path: 'register', component: PatientRegisterComponent },    // /patient/register
+  { path: '', component: DashboardComponent }, // /patient → dashboard
+  { path: 'login', component: PatientLoginComponent }, // /patient/login
+  { path: 'register', component: PatientRegisterComponent }, // /patient/register
   { path: 'consultation-booking', component: ConsultationBookingComponent },
   { path: 'ambulance-request', component: AmbulanceRequestComponent },
-  { path: '**', redirectTo: '' }
+  { path: 'hospital-booking', component: HospitalBookingComponent },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({

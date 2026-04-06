@@ -11,6 +11,7 @@ import { AmbulanceRequestComponent } from './ambulance-request/ambulance-request
 // Import your SharedModule here
 import { SharedModule } from '../shared/shared.module';
 import { PaystackService } from '../core/services/paystack/paystack.service';
+import { HospitalBookingComponent } from './hospital-booking/hospital-booking.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { PaystackService } from '../core/services/paystack/paystack.service';
     PatientRegisterComponent,
     ConsultationBookingComponent,
     AmbulanceRequestComponent,
+    HospitalBookingComponent,
   ],
   imports: [
     CommonModule,
