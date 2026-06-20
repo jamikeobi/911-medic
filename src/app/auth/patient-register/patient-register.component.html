@@ -1,7 +1,6 @@
 <!-- Top Bar  starts -->
 <div class="top-bar py-2">
   <div class="container d-flex justify-content-between align-items-center">
-    
     <!-- Left -->
     <div class="emergency-text">
       <i class="fas fa-triangle-exclamation me-2"></i>
@@ -17,7 +16,6 @@
       <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
       <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
     </div>
-
   </div>
 </div>
 <!-- Top Bar  ends -->
@@ -25,7 +23,6 @@
 <!-- nav Bar  starts -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
   <div class="container">
-
     <!-- Brand -->
     <a class="navbar-brand fw-bold" routerLink="/">911Medic</a>
 
@@ -37,20 +34,22 @@
       data-bs-target="#navbarNav"
       aria-controls="navbarNav"
       aria-expanded="false"
-      aria-label="Toggle navigation">
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <!-- Navbar Content -->
     <div class="collapse navbar-collapse" id="navbarNav">
-
       <!-- CENTER MENU -->
       <ul class="navbar-nav mx-auto gap-lg-4 text-center">
         <li class="nav-item">
           <a class="nav-link nav-hover" routerLink="/services">Services</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link nav-hover" routerLink="/how-it-works">How It Works</a>
+          <a class="nav-link nav-hover" routerLink="/how-it-works"
+            >How It Works</a
+          >
         </li>
         <li class="nav-item">
           <a class="nav-link nav-hover" routerLink="/contact">Contact</a>
@@ -58,58 +57,89 @@
       </ul>
 
       <!-- RIGHT ACTION BUTTONS -->
-     <!-- RIGHT ACTION BUTTONS -->
-<div class="d-flex align-items-center gap-2 text-center">
-  <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
-   <!-- Get Started Dropdown (Mobile-Friendly) -->
-<div class="dropdown d-block d-lg-inline-block">
-  <button
-    class="btn btn-primary dropdown-toggle w-100 w-lg-auto"
-    type="button"
-    data-bs-toggle="dropdown"
-    aria-expanded="false">
-    Get Started
-  </button>
-  <ul class="dropdown-menu dropdown-menu-start dropdown-menu-lg-end mt-2 shadow">
-    <li><a class="dropdown-item py-2" routerLink="/patient/register">Patient Sign Up</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item py-2" routerLink="/specialist/register">Specialist Sign Up</a></li>
-  </ul>
-</div>
+      <!-- RIGHT ACTION BUTTONS -->
+      <div class="d-flex align-items-center gap-2 text-center">
+        <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
+          <!-- Get Started Dropdown (Mobile-Friendly) -->
+          <div class="dropdown d-block d-lg-inline-block">
+            <button
+              class="btn btn-primary dropdown-toggle w-100 w-lg-auto"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Get Started
+            </button>
+            <ul
+              class="dropdown-menu dropdown-menu-start dropdown-menu-lg-end mt-2 shadow"
+            >
+              <li>
+                <a class="dropdown-item py-2" routerLink="/patient/register"
+                  >Patient Sign Up</a
+                >
+              </li>
+              <li><hr class="dropdown-divider" /></li>
+              <li>
+                <a class="dropdown-item py-2" routerLink="/specialist/register"
+                  >Specialist Sign Up</a
+                >
+              </li>
+            </ul>
+          </div>
 
-    <!-- Login -->
-    <div class="dropdown">
-      <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-        Login
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" routerLink="/patient/login">Patient Login</a></li>
-        <li><a class="dropdown-item" routerLink="/specialist/login">Specialist Login</a></li>
-      </ul>
-    </div>
-  </ng-container>
+          <!-- Login -->
+          <div class="dropdown">
+            <button
+              class="btn btn-outline-primary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+            >
+              Login
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" routerLink="/patient/login"
+                  >Patient Login</a
+                >
+              </li>
+              <li>
+                <a class="dropdown-item" routerLink="/specialist/login"
+                  >Specialist Login</a
+                >
+              </li>
+            </ul>
+          </div>
+        </ng-container>
 
-  <ng-template #loggedInTemplate>
-    <div class="dropdown">
-      <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-        {{ userName }}
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" routerLink="/patient">Patient Portal</a></li>
-        <li><a class="dropdown-item" href="#">Logout</a></li>
-      </ul>
-    </div>
-  </ng-template>
-</div>
-
+        <ng-template #loggedInTemplate>
+          <div class="dropdown">
+            <button
+              class="btn btn-outline-primary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+            >
+              {{ userName }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li>
+                <a class="dropdown-item" routerLink="/patient"
+                  >Patient Portal</a
+                >
+              </li>
+              <li><a class="dropdown-item" href="#">Logout</a></li>
+            </ul>
+          </div>
+        </ng-template>
+      </div>
     </div>
   </div>
 </nav>
 
-
 <!-- nav Bar  ends -->
 
-<div class="register-page min-vh-100 position-relative overflow-hidden text-light">
+<div
+  class="register-page min-vh-100 position-relative overflow-hidden text-light"
+>
   <div class="register-bg"></div>
 
   <div class="container position-relative z-3 py-5">
@@ -189,64 +219,117 @@
           <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
             <div class="row g-3">
               <div class="col-md-12">
-                <input type="text" class="form-control" placeholder="Full Name *" formControlName="fullName"
-                  [class.is-invalid]="submitted && f['fullName'].errors" />
-                <div *ngIf="submitted && f['fullName'].errors" class="invalid-feedback">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Full Name *"
+                  formControlName="fullName"
+                  [class.is-invalid]="submitted && f['fullName'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['fullName'].errors"
+                  class="invalid-feedback"
+                >
                   Full Name is required.
                 </div>
               </div>
 
               <div class="col-md-6">
-                <input type="tel" class="form-control" placeholder="Phone / WhatsApp *" formControlName="phone"
-                  [class.is-invalid]="submitted && f['phone'].errors" />
-                <div *ngIf="submitted && f['phone'].errors" class="invalid-feedback">
+                <input
+                  type="tel"
+                  class="form-control"
+                  placeholder="Phone / WhatsApp *"
+                  formControlName="phone"
+                  [class.is-invalid]="submitted && f['phone'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['phone'].errors"
+                  class="invalid-feedback"
+                >
                   Valid phone number required.
                 </div>
               </div>
 
               <div class="col-md-6">
-                <input type="email" class="form-control" placeholder="Email Address *" formControlName="email"
-                  [class.is-invalid]="submitted && f['email'].errors" />
-                <div *ngIf="submitted && f['email'].errors" class="invalid-feedback">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Email Address *"
+                  formControlName="email"
+                  [class.is-invalid]="submitted && f['email'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['email'].errors"
+                  class="invalid-feedback"
+                >
                   Valid email required.
                 </div>
               </div>
 
               <div class="col-md-6">
-                <input type="number" class="form-control" placeholder="Age *" formControlName="age"
-                  [class.is-invalid]="submitted && f['age'].errors" />
-                <div *ngIf="submitted && f['age'].errors" class="invalid-feedback">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Age *"
+                  formControlName="age"
+                  [class.is-invalid]="submitted && f['age'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['age'].errors"
+                  class="invalid-feedback"
+                >
                   Age required.
                 </div>
               </div>
 
               <div class="col-md-6">
-                <input type="text" class="form-control" placeholder="Location / City *" formControlName="location"
-                  [class.is-invalid]="submitted && f['location'].errors" />
-                <div *ngIf="submitted && f['location'].errors" class="invalid-feedback">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Location / City *"
+                  formControlName="location"
+                  [class.is-invalid]="submitted && f['location'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['location'].errors"
+                  class="invalid-feedback"
+                >
                   Location required.
                 </div>
               </div>
 
               <div class="col-md-6">
-                <select class="form-control" formControlName="gender"
-                  [class.is-invalid]="submitted && f['gender'].errors" style="background: #0a1f44;">
+                <select
+                  class="form-control"
+                  formControlName="gender"
+                  [class.is-invalid]="submitted && f['gender'].errors"
+                  style="background: #0a1f44"
+                >
                   <option value="" disabled selected>Gender *</option>
                   <option value="Male">Male</option>
                   <option value="Female">Female</option>
                   <option value="Other">Other</option>
                 </select>
-                <div *ngIf="submitted && f['gender'].errors" class="invalid-feedback">
+                <div
+                  *ngIf="submitted && f['gender'].errors"
+                  class="invalid-feedback"
+                >
                   Gender required.
                 </div>
               </div>
 
               <!-- Submit -->
               <div class="col-12 text-center mt-4">
-                <button type="submit" class="btn btn-primary btn-lg px-5 py-3"
-                  [disabled]="registerForm.invalid || isLoading">
-                  <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
-                  {{ isLoading ? 'Processing...' : 'Sign Up & Continue' }}
+                <button
+                  type="submit"
+                  class="btn btn-primary btn-lg px-5 py-3"
+                  [disabled]="registerForm.invalid || isLoading"
+                >
+                  <span
+                    *ngIf="isLoading"
+                    class="spinner-border spinner-border-sm me-2"
+                  ></span>
+                  {{ isLoading ? "Processing..." : "Sign Up & Continue" }}
                 </button>
               </div>
             </div>
@@ -264,10 +347,10 @@
   </div>
 </div>
 
-
-
 <!-- PREMIUM FOOTER -->
-<footer class="premium-footer position-relative text-light pt-5 pb-4 overflow-hidden">
+<footer
+  class="premium-footer position-relative text-light pt-5 pb-4 overflow-hidden"
+>
   <!-- Background Gradient -->
   <div class="footer-bg"></div>
 
@@ -277,7 +360,8 @@
       <div class="col-lg-4">
         <h5 class="fw-bold fs-3 mb-3">911Medic</h5>
         <p class="text-white-75 mb-4">
-          Fast, reliable access to medical specialists and emergency services — anytime, anywhere.
+          Fast, reliable access to medical specialists and emergency services —
+          anytime, anywhere.
         </p>
         <!-- Social Icons -->
         <div class="social-icons d-flex gap-3">
@@ -326,7 +410,7 @@
         </p>
         <form class="newsletter-form">
           <div class="input-group">
-            <input type="email" class="form-control" placeholder="Your email">
+            <input type="email" class="form-control" placeholder="Your email" />
             <button class="btn btn-primary" type="submit">Subscribe</button>
           </div>
         </form>
@@ -334,7 +418,7 @@
     </div>
 
     <!-- Copyright -->
-    <hr class="my-4 border-light opacity-25">
+    <hr class="my-4 border-light opacity-25" />
     <div class="text-center small text-white-75">
       © 2025 911Medic. All rights reserved. | Designed with care.
     </div>

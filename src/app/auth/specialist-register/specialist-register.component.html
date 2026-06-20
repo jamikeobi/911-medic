@@ -131,8 +131,6 @@
   </div>
 </nav>
 
-
-
 <div
   class="register-page min-vh-100 position-relative overflow-hidden text-light"
 >
@@ -234,6 +232,139 @@
                 </div>
               </div>
 
+              <!-- Email -->
+              <div class="col-md-12">
+                <input
+                  type="email"
+                  class="form-control"
+                  placeholder="Email Address *"
+                  formControlName="email"
+                  [class.is-invalid]="submitted && f['email'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['email'].errors"
+                  class="invalid-feedback"
+                >
+                  Valid email is required.
+                </div>
+              </div>
+
+              <!-- Phone -->
+              <div class="col-md-12">
+                <input
+                  type="tel"
+                  class="form-control"
+                  placeholder="Phone Number *"
+                  formControlName="phone"
+                  [class.is-invalid]="submitted && f['phone'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['phone'].errors"
+                  class="invalid-feedback"
+                >
+                  Phone Number is required (min 11 digits).
+                </div>
+              </div>
+
+              <!-- Password -->
+              <div class="col-md-12">
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Password *"
+                  formControlName="password"
+                  [class.is-invalid]="submitted && f['password'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['password'].errors"
+                  class="invalid-feedback"
+                >
+                  Password is required (min 8 characters).
+                </div>
+              </div>
+
+              <!-- Speciality -->
+              <div class="col-md-12">
+                <select
+                  class="form-control"
+                  formControlName="speciality"
+                  [class.is-invalid]="submitted && f['speciality'].errors"
+                  style="background: #0a1f44; color: #fff"
+                >
+                  <option value="" disabled selected>
+                    Select your speciality *
+                  </option>
+                  <option value="Cardiologist">Cardiologist</option>
+                  <option value="Dermatologist">Dermatologist</option>
+                  <option value="Mental Health">Mental Health</option>
+                  <option value="Pediatrician">Pediatrician</option>
+                  <option value="Gynecologist">Gynecologist</option>
+                  <option value="Oncologist">Oncologist</option>
+                  <option value="Urologist">Urologist</option>
+                  <option value="Neuro-surgeon">Neuro-surgeon</option>
+                  <option value="Dietician">Dietician</option>
+                </select>
+                <div
+                  *ngIf="submitted && f['speciality'].errors"
+                  class="invalid-feedback"
+                >
+                  Please select your speciality.
+                </div>
+              </div>
+
+              <!-- Qualifications -->
+              <div class="col-md-12">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Qualifications * (e.g. MBBS, FMCP, MD)"
+                  formControlName="qualifications"
+                  [class.is-invalid]="submitted && f['qualifications'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['qualifications'].errors"
+                  class="invalid-feedback"
+                >
+                  Qualifications are required.
+                </div>
+              </div>
+
+              <!-- License Number + Years of Experience -->
+              <div class="col-md-6">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="License Number *"
+                  formControlName="licenseNumber"
+                  [class.is-invalid]="submitted && f['licenseNumber'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['licenseNumber'].errors"
+                  class="invalid-feedback"
+                >
+                  License number is required.
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <input
+                  type="number"
+                  class="form-control"
+                  placeholder="Years of Experience *"
+                  formControlName="yearsOfExperience"
+                  min="0"
+                  [class.is-invalid]="
+                    submitted && f['yearsOfExperience'].errors
+                  "
+                />
+                <div
+                  *ngIf="submitted && f['yearsOfExperience'].errors"
+                  class="invalid-feedback"
+                >
+                  Years of experience is required.
+                </div>
+              </div>
+
               <!-- Address -->
               <div class="col-md-12">
                 <input
@@ -251,38 +382,24 @@
                 </div>
               </div>
 
-              <!-- Email -->
+              <!-- Hospital (optional) -->
               <div class="col-md-12">
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  placeholder="Email Address *"
-                  formControlName="email"
-                  [class.is-invalid]="submitted && f['email'].errors"
+                  placeholder="Hospital / Clinic (optional)"
+                  formControlName="hospital"
                 />
-                <div
-                  *ngIf="submitted && f['email'].errors"
-                  class="invalid-feedback"
-                >
-                  Email is required.
-                </div>
               </div>
 
-              <!-- Phone Number -->
+              <!-- Bio (optional) -->
               <div class="col-md-12">
-                <input
-                  type="number"
+                <textarea
                   class="form-control"
-                  placeholder="Phone Numbers *"
-                  formControlName="phoneNumber"
-                  [class.is-invalid]="submitted && f['phoneNumber'].errors"
-                />
-                <div
-                  *ngIf="submitted && f['phoneNumber'].errors"
-                  class="invalid-feedback"
-                >
-                  Phone Number is required.
-                </div>
+                  placeholder="Short professional bio (optional)"
+                  formControlName="bio"
+                  rows="3"
+                ></textarea>
               </div>
 
               <!-- CV Upload -->
@@ -295,6 +412,7 @@
                   class="form-control"
                   (change)="onCVUpload($event)"
                   accept=".pdf,.doc,.docx"
+                  [class.is-invalid]="submitted && f['cv'].errors"
                 />
                 <div
                   *ngIf="submitted && f['cv'].errors"
@@ -306,14 +424,15 @@
 
               <!-- ID Upload -->
               <div class="col-md-12">
-                <label class="form-label text-white"
-                  >Upload ID * (Driving License or NIN – Image/PDF)</label
-                >
+                <label class="form-label text-white">
+                  Upload ID * (Driving License or NIN – Image/PDF)
+                </label>
                 <input
                   type="file"
                   class="form-control"
                   (change)="onIDUpload($event)"
                   accept="image/*,.pdf"
+                  [class.is-invalid]="submitted && f['idDocument'].errors"
                 />
                 <div
                   *ngIf="submitted && f['idDocument'].errors"
@@ -351,8 +470,6 @@
     </div>
   </div>
 </div>
-
-
 
 <!-- PREMIUM FOOTER -->
 <footer

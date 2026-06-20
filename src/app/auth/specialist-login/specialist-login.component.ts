@@ -22,9 +22,8 @@ export class SpecialistLoginComponent {
     private router: Router,
   ) {
     this.loginForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
       email: ['', [Validators.required, Validators.email]],
-      speciality: ['', Validators.required],
+      password: ['', [Validators.required, Validators.minLength(8)]],
     });
   }
 
@@ -39,31 +38,16 @@ export class SpecialistLoginComponent {
     this.isLoading = true;
     this.errorMessage = '';
 
-    // const specialists = JSON.parse(localStorage.getItem('specialists') || '[]');
-    // const found = specialists.find(
-    //   (s: any) =>
-    //     s.fullName.toLowerCase() === this.f['fullName'].value.toLowerCase() &&
-    //     s.email === this.f['email'].value &&
-    //     (s.speciality ? s.speciality === this.f['speciality'].value : true),
-    // );
+    const payload = {
+      ...this.loginForm.value,
+      role: 'specialist', // backend login controller requires this
+    };
 
-    // if (!found) {
-    //   this.errorMessage =
-    //     'Invalid credentials or not registered as a specialist.';
-    //   this.isLoading = false;
-    //   return;
-    // }
+    // TODO: call AuthService.login(payload) when APIs are ready
+    console.log('Login payload:', payload);
 
-    // if (found.status && found.status !== 'approved') {
-    //   this.errorMessage =
-    //     'Your account is pending approval. You will be notified once approved.';
-    //   this.isLoading = false;
-    //   return;
-    // }
-
-    // Login success
-    // localStorage.setItem('currentSpecialist', JSON.stringify(found));
-    this.successMessage = 'Login successful! Redirecting to your dashboard...';
+    this.successMessage = 'Login successful! Redirecting...';
+    this.isLoading = false;
 
     setTimeout(() => {
       this.router.navigate(['/specialist']);
