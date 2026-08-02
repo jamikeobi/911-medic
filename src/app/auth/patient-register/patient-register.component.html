@@ -1,141 +1,4 @@
-<!-- Top Bar  starts -->
-<div class="top-bar py-2">
-  <div class="container d-flex justify-content-between align-items-center">
-    <!-- Left -->
-    <div class="emergency-text">
-      <i class="fas fa-triangle-exclamation me-2"></i>
-      Emergency Help!
-    </div>
 
-    <!-- Right -->
-    <div class="social-icons">
-      <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-      <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-      <a href="#" aria-label="X"><i class="fab fa-x-twitter"></i></a>
-      <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-      <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
-      <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
-    </div>
-  </div>
-</div>
-<!-- Top Bar  ends -->
-
-<!-- nav Bar  starts -->
-<nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
-  <div class="container">
-    <!-- Brand -->
-    <a class="navbar-brand fw-bold" routerLink="/">911Medic</a>
-
-    <!-- Mobile Toggle -->
-    <button
-      class="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarNav"
-      aria-controls="navbarNav"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <!-- Navbar Content -->
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <!-- CENTER MENU -->
-      <ul class="navbar-nav mx-auto gap-lg-4 text-center">
-        <li class="nav-item">
-          <a class="nav-link nav-hover" routerLink="/services">Services</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-hover" routerLink="/how-it-works"
-            >How It Works</a
-          >
-        </li>
-        <li class="nav-item">
-          <a class="nav-link nav-hover" routerLink="/contact">Contact</a>
-        </li>
-      </ul>
-
-      <!-- RIGHT ACTION BUTTONS -->
-      <!-- RIGHT ACTION BUTTONS -->
-      <div class="d-flex align-items-center gap-2 text-center">
-        <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
-          <!-- Get Started Dropdown (Mobile-Friendly) -->
-          <div class="dropdown d-block d-lg-inline-block">
-            <button
-              class="btn btn-primary dropdown-toggle w-100 w-lg-auto"
-              type="button"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
-            >
-              Get Started
-            </button>
-            <ul
-              class="dropdown-menu dropdown-menu-start dropdown-menu-lg-end mt-2 shadow"
-            >
-              <li>
-                <a class="dropdown-item py-2" routerLink="/patient/register"
-                  >Patient Sign Up</a
-                >
-              </li>
-              <li><hr class="dropdown-divider" /></li>
-              <li>
-                <a class="dropdown-item py-2" routerLink="/specialist/register"
-                  >Specialist Sign Up</a
-                >
-              </li>
-            </ul>
-          </div>
-
-          <!-- Login -->
-          <div class="dropdown">
-            <button
-              class="btn btn-outline-primary dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-            >
-              Login
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li>
-                <a class="dropdown-item" routerLink="/patient/login"
-                  >Patient Login</a
-                >
-              </li>
-              <li>
-                <a class="dropdown-item" routerLink="/specialist/login"
-                  >Specialist Login</a
-                >
-              </li>
-            </ul>
-          </div>
-        </ng-container>
-
-        <ng-template #loggedInTemplate>
-          <div class="dropdown">
-            <button
-              class="btn btn-outline-primary dropdown-toggle"
-              type="button"
-              data-bs-toggle="dropdown"
-            >
-              {{ userName }}
-            </button>
-            <ul class="dropdown-menu dropdown-menu-end">
-              <li>
-                <a class="dropdown-item" routerLink="/patient"
-                  >Patient Portal</a
-                >
-              </li>
-              <li><a class="dropdown-item" href="#">Logout</a></li>
-            </ul>
-          </div>
-        </ng-template>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<!-- nav Bar  ends -->
 
 <div
   class="register-page min-vh-100 position-relative overflow-hidden text-light"
@@ -268,6 +131,22 @@
 
               <div class="col-md-6">
                 <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Password *"
+                  formControlName="password"
+                  [class.is-invalid]="submitted && f['password'].errors"
+                />
+                <div
+                  *ngIf="submitted && f['password'].errors"
+                  class="invalid-feedback"
+                >
+                  Password is required.
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <input
                   type="number"
                   class="form-control"
                   placeholder="Age *"
@@ -337,7 +216,7 @@
 
           <p class="text-center mt-4 text-white-75">
             Already registered?
-            <a routerLink="/patient/login" class="text-primary fw-bold"
+            <a routerLink="/auth/patient/login" class="text-primary fw-bold"
               >Login here</a
             >
           </p>
@@ -347,80 +226,4 @@
   </div>
 </div>
 
-<!-- PREMIUM FOOTER -->
-<footer
-  class="premium-footer position-relative text-light pt-5 pb-4 overflow-hidden"
->
-  <!-- Background Gradient -->
-  <div class="footer-bg"></div>
 
-  <div class="container position-relative z-2">
-    <div class="row g-5">
-      <!-- Brand & Description -->
-      <div class="col-lg-4">
-        <h5 class="fw-bold fs-3 mb-3">911Medic</h5>
-        <p class="text-white-75 mb-4">
-          Fast, reliable access to medical specialists and emergency services —
-          anytime, anywhere.
-        </p>
-        <!-- Social Icons -->
-        <div class="social-icons d-flex gap-3">
-          <a href="#" class="social-link"><i class="bi bi-whatsapp"></i></a>
-          <a href="#" class="social-link"><i class="bi bi-facebook"></i></a>
-          <a href="#" class="social-link"><i class="bi bi-twitter-x"></i></a>
-          <a href="#" class="social-link"><i class="bi bi-instagram"></i></a>
-        </div>
-      </div>
-
-      <!-- Quick Links -->
-      <div class="col-lg-2 col-md-4">
-        <h6 class="fw-bold mb-3">Quick Links</h6>
-        <ul class="list-unstyled footer-links">
-          <li><a routerLink="/services">Services</a></li>
-          <li><a routerLink="/how-it-works">How It Works</a></li>
-          <li><a routerLink="/contact">Contact</a></li>
-          <li><a routerLink="/specialist/register">Join as Specialist</a></li>
-        </ul>
-      </div>
-
-      <!-- Contact Info -->
-      <div class="col-lg-3 col-md-4">
-        <h6 class="fw-bold mb-3">Contact Us</h6>
-        <ul class="list-unstyled footer-contact">
-          <li>
-            <i class="bi bi-whatsapp me-2"></i>
-            <a href="https://wa.me/YOURNUMBER">+234XXXXXXXXXX</a>
-          </li>
-          <li>
-            <i class="bi bi-envelope-fill me-2"></i>
-            <a href="mailto:support@911medic.com">support@911medic.com</a>
-          </li>
-          <li>
-            <i class="bi bi-geo-alt-fill me-2"></i>
-            Lagos, Nigeria
-          </li>
-        </ul>
-      </div>
-
-      <!-- Newsletter (Optional Premium Touch) -->
-      <div class="col-lg-3 col-md-4">
-        <h6 class="fw-bold mb-3">Stay Updated</h6>
-        <p class="text-white-75 small mb-3">
-          Subscribe for health tips and updates.
-        </p>
-        <form class="newsletter-form">
-          <div class="input-group">
-            <input type="email" class="form-control" placeholder="Your email" />
-            <button class="btn btn-primary" type="submit">Subscribe</button>
-          </div>
-        </form>
-      </div>
-    </div>
-
-    <!-- Copyright -->
-    <hr class="my-4 border-light opacity-25" />
-    <div class="text-center small text-white-75">
-      © 2025 911Medic. All rights reserved. | Designed with care.
-    </div>
-  </div>
-</footer>

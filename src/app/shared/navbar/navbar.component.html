@@ -1,7 +1,6 @@
 <!-- Top Bar  starts -->
 <div class="top-bar py-2">
   <div class="container d-flex justify-content-between align-items-center">
-    
     <!-- Left -->
     <div class="emergency-text">
       <i class="fas fa-triangle-exclamation me-2"></i>
@@ -17,7 +16,6 @@
       <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
       <a href="#" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
     </div>
-
   </div>
 </div>
 <!-- Top Bar  ends -->
@@ -25,7 +23,6 @@
 <!-- nav Bar  starts -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
   <div class="container">
-
     <!-- Brand -->
     <a class="navbar-brand fw-bold" routerLink="/">911Medic</a>
 
@@ -37,20 +34,22 @@
       data-bs-target="#navbarNav"
       aria-controls="navbarNav"
       aria-expanded="false"
-      aria-label="Toggle navigation">
+      aria-label="Toggle navigation"
+    >
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <!-- Navbar Content -->
     <div class="collapse navbar-collapse" id="navbarNav">
-
       <!-- CENTER MENU -->
       <ul class="navbar-nav mx-auto gap-lg-4 text-center">
         <li class="nav-item">
           <a class="nav-link nav-hover" routerLink="/services">Services</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link nav-hover" routerLink="/how-it-works">How It Works</a>
+          <a class="nav-link nav-hover" routerLink="/how-it-works"
+            >How It Works</a
+          >
         </li>
         <li class="nav-item">
           <a class="nav-link nav-hover" routerLink="/contact">Contact</a>
@@ -58,53 +57,89 @@
       </ul>
 
       <!-- RIGHT ACTION BUTTONS -->
-     <!-- RIGHT ACTION BUTTONS -->
-<div class="d-flex align-items-center gap-2 text-center">
-  <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
-   <!-- Get Started Dropdown (Mobile-Friendly) -->
-<div class="dropdown d-block d-lg-inline-block">
-  <button
-    class="btn btn-primary dropdown-toggle w-100 w-lg-auto"
-    type="button"
-    data-bs-toggle="dropdown"
-    aria-expanded="false">
-    Get Started
-  </button>
-  <ul class="dropdown-menu dropdown-menu-start dropdown-menu-lg-end mt-2 shadow">
-    <li><a class="dropdown-item py-2" routerLink="/patient/register">Patient Sign Up</a></li>
-    <li><hr class="dropdown-divider"></li>
-    <li><a class="dropdown-item py-2" routerLink="/specialist/register">Specialist Sign Up</a></li>
-  </ul>
-</div>
+      <div class="d-flex align-items-center gap-2 text-center">
+        <ng-container *ngIf="!isLoggedIn; else loggedInTemplate">
+          <!-- Get Started Dropdown — hidden when logged in -->
+          <div class="dropdown d-block d-lg-inline-block">
+            <button
+              class="btn btn-primary dropdown-toggle w-100 w-lg-auto"
+              type="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Get Started
+            </button>
+            <ul class="dropdown-menu dropdown-menu-start dropdown-menu-lg-end mt-2 shadow">
+  <li>
+    <a class="dropdown-item py-2" (click)="navigate('/auth/patient/register')">
+      Patient Sign Up
+    </a>
+  </li>
+  <li><hr class="dropdown-divider" /></li>
+  <li>
+    <a class="dropdown-item py-2" (click)="navigate('/auth/specialist/register')">
+      Specialist Sign Up
+    </a>
+  </li>
+</ul>
+          </div>
 
-    <!-- Login -->
-    <div class="dropdown">
-      <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-        Login
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" routerLink="/patient/login">Patient Login</a></li>
-        <li><a class="dropdown-item" routerLink="/specialist/login">Specialist Login</a></li>
-      </ul>
-    </div>
-  </ng-container>
+          <!-- Login Dropdown — hidden when logged in -->
+          <div class="dropdown">
+            <button
+              class="btn btn-outline-primary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+            >
+              Login
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+  <li>
+    <a class="dropdown-item" (click)="navigate('/auth/patient/login')">
+      Patient Login
+    </a>
+  </li>
+  <li>
+    <a class="dropdown-item" (click)="navigate('/auth/specialist/login')">
+      Specialist Login
+    </a>
+  </li>
+</ul>
+          </div>
+        </ng-container>
 
-  <ng-template #loggedInTemplate>
-    <div class="dropdown">
-      <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-        {{ userName }}
-      </button>
-      <ul class="dropdown-menu dropdown-menu-end">
-        <li><a class="dropdown-item" routerLink="/patient">Patient Portal</a></li>
-        <li><a class="dropdown-item" href="#">Logout</a></li>
-      </ul>
-    </div>
-  </ng-template>
-</div>
+        <!-- Shown when logged in -->
+        <ng-template #loggedInTemplate>
+          <div class="dropdown">
+            <button
+              class="btn btn-outline-primary dropdown-toggle"
+              type="button"
+              data-bs-toggle="dropdown"
+            >
+              {{ userName }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <!-- Dashboard link changes based on role -->
+              <li>
+                <a class="dropdown-item" [routerLink]="dashboardRoute">
+                  <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </a>
+              </li>
 
+              <li><hr class="dropdown-divider" /></li>
+
+              <!-- Real logout -->
+              <li>
+                <button class="dropdown-item text-danger" (click)="logout()">
+                  <i class="fas fa-sign-out-alt me-2"></i>Logout
+                </button>
+              </li>
+            </ul>
+          </div>
+        </ng-template>
+      </div>
     </div>
   </div>
 </nav>
-
 
 <!-- nav Bar  ends -->

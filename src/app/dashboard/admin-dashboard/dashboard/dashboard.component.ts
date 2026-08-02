@@ -21,7 +21,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.checkScreenSize();
     this.role = this.adminService.getRole();
-
     // If role exists, navigate to analytics
     if (this.role) {
       this.router.navigate(['/admin/analytics']);

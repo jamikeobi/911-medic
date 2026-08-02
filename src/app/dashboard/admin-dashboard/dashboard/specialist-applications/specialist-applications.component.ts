@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { AdminService } from 'src/app/core/services/admin/admin.service';
+import { SpecialistApplicationView } from 'src/app/core/models/admin/specialist-application.model';
 
 @Component({
   selector: 'app-specialist-applications',
   templateUrl: './specialist-applications.component.html',
   styleUrls: ['./specialist-applications.component.css'],
 })
-export class SpecialistApplicationsComponent implements OnInit{
-  specialists: any[] = [];
-  pendingSpecialists: any[] = [];
-  approvedSpecialists: any[] = [];
-  rejectedSpecialists: any[] = [];
+export class SpecialistApplicationsComponent implements OnInit {
+  specialists: SpecialistApplicationView[] = [];
+  pendingSpecialists: SpecialistApplicationView[] = [];
+  approvedSpecialists: SpecialistApplicationView[] = [];
+  rejectedSpecialists: SpecialistApplicationView[] = [];
 
-  // For document preview modal
   showDocumentModal = false;
   selectedDocument: {
     type: 'cv' | 'id';
@@ -20,9 +20,8 @@ export class SpecialistApplicationsComponent implements OnInit{
     specialistName: string;
   } | null = null;
 
-  // For full application details modal
   showDetailsModal = false;
-  selectedSpecialist: any = null;
+  selectedSpecialist: SpecialistApplicationView | null = null;
 
   loading = true;
   error = false;
@@ -35,6 +34,8 @@ export class SpecialistApplicationsComponent implements OnInit{
 
   loadApplications(): void {
     this.loading = true;
+    this.error = false;
+
     this.adminService.getSpecialistApplications().subscribe({
       next: (data) => {
         this.specialists = data;
@@ -73,7 +74,10 @@ export class SpecialistApplicationsComponent implements OnInit{
   }
 
   rejectSpecialist(id: string): void {
-    this.adminService.rejectSpecialist(id).subscribe({
+    // Optional: prompt for reason
+    const reason = prompt('Rejection reason (optional):') || undefined;
+
+    this.adminService.rejectSpecialist(id, reason).subscribe({
       next: () => {
         const specialist = this.specialists.find((s) => s.id === id);
         if (specialist) specialist.status = 'rejected';
@@ -83,10 +87,10 @@ export class SpecialistApplicationsComponent implements OnInit{
     });
   }
 
-  viewDocument(type: 'cv' | 'id', specialist: any): void {
+  viewDocument(type: 'cv' | 'id', specialist: SpecialistApplicationView): void {
     this.selectedDocument = {
       type,
-      url: specialist[type === 'cv' ? 'cvUrl' : 'idUrl'],
+      url: type === 'cv' ? specialist.cvUrl || '' : specialist.idUrl || '',
       specialistName: specialist.fullName,
     };
     this.showDocumentModal = true;
@@ -97,7 +101,7 @@ export class SpecialistApplicationsComponent implements OnInit{
     this.selectedDocument = null;
   }
 
-  viewDetails(specialist: any): void {
+  viewDetails(specialist: SpecialistApplicationView): void {
     this.selectedSpecialist = { ...specialist };
     this.showDetailsModal = true;
   }

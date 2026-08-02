@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
+import { authGuard } from './core/guard/auth/auth.guard';
+import { roleGuard } from './core/guard/role/role.guard';
 
 const routes: Routes = [
   {
@@ -16,17 +18,23 @@ const routes: Routes = [
 
   {
     path: 'patient',
+    canActivate: [authGuard, roleGuard],
+    data:{role: 'patient'},
     loadChildren: () =>
       import('./patient/patient.module').then(m => m.PatientModule)
   },
 
   {
     path: 'specialist',
+    canActivate: [authGuard, roleGuard],
+    data:{role: 'specialist'},
     loadChildren: () =>
       import('./specialist/specialist.module').then(m => m.SpecialistModule)
   },
   {
     path: 'admin',
+    canActivate: [authGuard, roleGuard],
+    data:{role: 'admin'},
     loadChildren: () =>
       import('./dashboard/admin-dashboard/admin-dashboard.module').then(m => m.AdminDashboardModule)
   },

@@ -8,6 +8,7 @@ import { HowItWorksComponent } from './how-it-works/how-it-works.component';
 import { ContactComponent } from './contact/contact.component';
 import { SharedModule } from '../shared/shared.module';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AdminLoginComponent } from './admin-login/admin-login.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     HomeComponent,
     ServicesComponent,
     HowItWorksComponent,
-    ContactComponent
+    ContactComponent,
+    AdminLoginComponent
   ],
   imports: [
     CommonModule,

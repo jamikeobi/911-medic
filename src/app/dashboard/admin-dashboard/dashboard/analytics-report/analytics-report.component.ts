@@ -1,6 +1,12 @@
-import { ChangeDetectorRef, Component, HostListener, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  HostListener,
+  OnInit,
+} from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
 import { AdminService } from 'src/app/core/services/admin/admin.service';
+import { AdminAnalytics } from 'src/app/core/models/admin/admin-analytics.model';
 
 @Component({
   selector: 'app-analytics-report',
@@ -8,95 +14,58 @@ import { AdminService } from 'src/app/core/services/admin/admin.service';
   styleUrls: ['./analytics-report.component.css'],
 })
 export class AnalyticsReportComponent implements OnInit {
-  analytics: any = null;
+  analytics: AdminAnalytics | null = null;
   role: 'owner' | 'staff' | null = null;
   showRevenueChart = false;
   loading = true;
 
-  // Line Chart for Revenue
+  // Line Chart – Monthly Revenue
   lineChartData: ChartData<'line'> = { labels: [], datasets: [] };
   lineChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: '#ffffff',
-        },
-      },
-    },
+    plugins: { legend: { labels: { color: '#ffffff' } } },
     scales: {
       y: {
         beginAtZero: true,
-        grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
+        grid: { color: 'rgba(255, 255, 255, 0.1)' },
         ticks: {
           color: '#ffffff',
-          callback: function (value) {
-            return '₦' + value;
-          },
+          callback: (value) => '₦' + value,
         },
       },
       x: {
-        grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
-        ticks: {
-          color: '#ffffff',
-        },
+        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+        ticks: { color: '#ffffff' },
       },
     },
   };
   lineChartType: ChartType = 'line';
 
-  // Pie Chart for Specialist Distribution
+  // Pie Chart – Specialist Distribution
   pieChartData: ChartData<'pie'> = { labels: [], datasets: [] };
   pieChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: '#ffffff',
-        },
-      },
-    },
+    plugins: { legend: { labels: { color: '#ffffff' } } },
   };
   pieChartType: ChartType = 'pie';
 
-  // Revenue by Consultation Type Pie Chart
-  revenuePieChartData: ChartData<'pie'> = { labels: [], datasets: [] };
-
-  // Bar Chart for Consultation Status
+  // Bar Chart – Consultation Status (derived from backend numbers)
   consultationStatusData: ChartData<'bar'> = { labels: [], datasets: [] };
   barChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        labels: {
-          color: '#ffffff',
-        },
-      },
-    },
+    plugins: { legend: { labels: { color: '#ffffff' } } },
     scales: {
       y: {
         beginAtZero: true,
-        grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
-        ticks: {
-          color: '#ffffff',
-        },
+        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+        ticks: { color: '#ffffff' },
       },
       x: {
-        grid: {
-          color: 'rgba(255, 255, 255, 0.1)',
-        },
-        ticks: {
-          color: '#ffffff',
-        },
+        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+        ticks: { color: '#ffffff' },
       },
     },
   };
@@ -112,95 +81,103 @@ export class AnalyticsReportComponent implements OnInit {
     this.loadAnalytics();
   }
 
-  // Add after loading analytics
   loadAnalytics() {
     this.loading = true;
-    this.adminService.getAnalytics().subscribe((data) => {
-      console.log('Analytics data:', data);
 
-      this.analytics = { ...data };
+    this.adminService.getAnalytics().subscribe({
+      next: (data) => {
+        this.analytics = data;
+        this.showRevenueChart = this.role === 'owner';
 
-      if (this.role === 'owner') {
-        this.showRevenueChart = true;
+        // ---------- Monthly Revenue Line Chart ----------
+        const monthNames = [
+          '',
+          'Jan',
+          'Feb',
+          'Mar',
+          'Apr',
+          'May',
+          'Jun',
+          'Jul',
+          'Aug',
+          'Sep',
+          'Oct',
+          'Nov',
+          'Dec',
+        ];
 
-        // Set line chart data
         this.lineChartData = {
-          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-          datasets: data.monthlyRevenue || [],
-        };
-
-        // Set revenue by consultation type pie chart
-        this.revenuePieChartData = {
-          labels: [
-            'Online Consultations',
-            'Physical Consultations',
-            'Emergency Services',
-          ],
+          labels: (data.monthlyRevenue || []).map(
+            (m) => monthNames[m.month] || `M${m.month}`,
+          ),
           datasets: [
             {
-              data: [
-                data.revenueBreakdown?.online || 150000,
-                data.revenueBreakdown?.physical || 120000,
-                data.revenueBreakdown?.emergency || 50000,
-              ],
-              backgroundColor: ['#0d6efd', '#20c997', '#dc3545'],
+              label: 'Revenue (₦)',
+              data: (data.monthlyRevenue || []).map((m) => m.revenue),
+              borderColor: '#0d6efd',
+              backgroundColor: 'rgba(13, 110, 253, 0.15)',
+              fill: true,
+              tension: 0.3,
             },
           ],
         };
-      } else {
-        this.showRevenueChart = false;
-        this.lineChartData = { labels: [], datasets: [] };
-      }
 
-      // Set specialist distribution pie chart
-      if (data.specialistDistribution) {
+        // ---------- Specialist Distribution Pie ----------
         this.pieChartData = {
-          labels: data.specialistDistribution.labels || [],
-          datasets: data.specialistDistribution.datasets || [],
+          labels: data.specialistDistribution?.labels || [],
+          datasets: [
+            {
+              data: data.specialistDistribution?.data || [],
+              backgroundColor: [
+                '#0d6efd',
+                '#198754',
+                '#ffc107',
+                '#dc3545',
+                '#6f42c1',
+                '#fd7e14',
+                '#20c997',
+                '#6610f2',
+              ],
+            },
+          ],
         };
-      }
 
-      // Set consultation status bar chart
-      this.consultationStatusData = {
-        labels: ['Completed', 'Pending', 'Ongoing', 'Cancelled'],
-        datasets: [
-          {
-            data: [
-              data.consultationSummary?.completed || 45,
-              data.consultationSummary?.pending || 12,
-              data.consultationSummary?.ongoing || 8,
-              data.consultationSummary?.cancelled || 5,
-            ],
-            backgroundColor: ['#28a745', '#ffc107', '#17a2b8', '#dc3545'],
-            label: 'Consultations',
-          },
-        ],
-      };
+        // ---------- Consultation Status Bar (only what backend gives) ----------
+        this.consultationStatusData = {
+          labels: ['Completed', 'Active / Ongoing'],
+          datasets: [
+            {
+              label: 'Consultations',
+              data: [
+                data.completedConsultations || 0,
+                data.activeConsultations || 0,
+              ],
+              backgroundColor: ['#28a745', '#17a2b8'],
+            },
+          ],
+        };
 
-      this.loading = false;
-      this.cdr.detectChanges();
+        this.loading = false;
+        this.cdr.detectChanges();
 
-      // Force chart resize after data is loaded and after a short delay
-      setTimeout(() => {
-        window.dispatchEvent(new Event('resize'));
-      }, 100);
+        setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+      },
+      error: (err) => {
+        console.error('Failed to load analytics', err);
+        this.loading = false;
+      },
     });
   }
 
-  // Add method to handle window resize
   @HostListener('window:resize')
   onWindowResize() {
-    // Force chart redraw on resize
-    if (this.lineChartData.datasets.length > 0) {
+    if (this.lineChartData.datasets.length) {
       this.lineChartData = { ...this.lineChartData };
     }
-    if (this.pieChartData.datasets.length > 0) {
+    if (this.pieChartData.datasets.length) {
       this.pieChartData = { ...this.pieChartData };
     }
-    if (this.revenuePieChartData?.datasets?.length > 0) {
-      this.revenuePieChartData = { ...this.revenuePieChartData };
-    }
-    if (this.consultationStatusData.datasets.length > 0) {
+    if (this.consultationStatusData.datasets.length) {
       this.consultationStatusData = { ...this.consultationStatusData };
     }
   }

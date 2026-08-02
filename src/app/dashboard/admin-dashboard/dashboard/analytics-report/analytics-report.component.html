@@ -2,7 +2,7 @@
   <div class="analytics-bg"></div>
 
   <div class="container position-relative z-2">
-    <!-- Header with Date Range -->
+    <!-- Header -->
     <div class="d-flex justify-content-between align-items-center mb-5 flex-wrap gap-3">
       <div>
         <h2 class="fw-bold display-5 text-white mb-1">Analytics & Reports</h2>
@@ -11,10 +11,16 @@
         </small>
       </div>
       <div class="d-flex gap-3 align-items-center">
-        <span class="badge bg-opacity-75" [ngClass]="role === 'owner' ? 'bg-primary' : 'bg-secondary'">
+        <span
+          class="badge bg-opacity-75"
+          [ngClass]="role === 'owner' ? 'bg-primary' : 'bg-secondary'"
+        >
           {{ role === 'owner' ? 'Owner' : 'Staff' }}
         </span>
-        <select class="form-select form-select-sm bg-dark text-light border-secondary" style="width: auto;">
+        <select
+          class="form-select form-select-sm bg-dark text-light border-secondary"
+          style="width: auto"
+        >
           <option value="7d">Last 7 days</option>
           <option value="30d" selected>Last 30 days</option>
           <option value="90d">Last 90 days</option>
@@ -24,183 +30,172 @@
     </div>
 
     <!-- Loading State -->
-    <div *ngIf="!analytics" class="text-center py-5 my-5">
+    <div *ngIf="loading || !analytics" class="text-center py-5 my-5">
       <div class="spinner-border text-primary spinner-grow-lg" role="status">
         <span class="visually-hidden">Loading analytics...</span>
       </div>
       <p class="text-white-50 mt-3 fs-5">Fetching dashboard data...</p>
     </div>
 
-    <!-- Metrics Grid – only shown when data exists -->
-    <ng-container *ngIf="analytics">
-      <!-- Key Performance Indicators -->
+    <!-- Content – only real backend fields -->
+    <ng-container *ngIf="!loading && analytics">
+      <!-- Key Metrics -->
       <div class="row g-4 mb-5">
-        <div class="col-6 col-md-3 col-lg-3">
-          <div class="metric-card dashboard-card animate-on-scroll" data-delay="0">
+        <div class="col-6 col-md-3">
+          <div class="metric-card dashboard-card">
             <div class="d-flex align-items-center justify-content-between">
               <div>
                 <h6 class="text-white-75 mb-1 small">Total Specialists</h6>
-                <h3 class="fw-bold text-white mb-0">{{ analytics.totalSpecialists }}</h3>
-                <small class="text-success" *ngIf="analytics.specialistGrowth">
-                  <i class="bi bi-arrow-up"></i> {{ analytics.specialistGrowth }}% this month
-                </small>
+                <h3 class="fw-bold text-white mb-0">
+                  {{ analytics.totalSpecialists }}
+                </h3>
               </div>
               <i class="bi bi-people-fill card-icon text-primary"></i>
             </div>
           </div>
         </div>
 
-        <div class="col-6 col-md-3 col-lg-3">
-          <div class="metric-card dashboard-card animate-on-scroll" data-delay="100">
+        <div class="col-6 col-md-3">
+          <div class="metric-card dashboard-card">
             <div class="d-flex align-items-center justify-content-between">
               <div>
                 <h6 class="text-white-75 mb-1 small">Pending Approvals</h6>
-                <h3 class="fw-bold text-warning mb-0">{{ analytics.pendingApprovals }}</h3>
-                <small class="text-warning" *ngIf="analytics.pendingGrowth">
-                  <i class="bi bi-clock-history"></i> {{ analytics.pendingGrowth }} awaiting review
-                </small>
+                <h3 class="fw-bold text-warning mb-0">
+                  {{ analytics.pendingApprovals }}
+                </h3>
               </div>
               <i class="bi bi-hourglass-split card-icon text-warning"></i>
             </div>
           </div>
         </div>
 
-        <div class="col-6 col-md-3 col-lg-3">
-          <div class="metric-card dashboard-card animate-on-scroll" data-delay="200">
+        <div class="col-6 col-md-3">
+          <div class="metric-card dashboard-card">
             <div class="d-flex align-items-center justify-content-between">
               <div>
                 <h6 class="text-white-75 mb-1 small">Active Consultations</h6>
-                <h3 class="fw-bold text-success mb-0">{{ analytics.activeConsultations }}</h3>
-                <small class="text-info" *ngIf="analytics.consultationBreakdown">
-                  {{ analytics.consultationBreakdown.online }} Online | {{ analytics.consultationBreakdown.physical }} Physical
-                </small>
+                <h3 class="fw-bold text-success mb-0">
+                  {{ analytics.activeConsultations }}
+                </h3>
               </div>
               <i class="bi bi-chat-dots-fill card-icon text-success"></i>
             </div>
           </div>
         </div>
 
-        <div class="col-6 col-md-3 col-lg-3">
-          <div class="metric-card dashboard-card animate-on-scroll" data-delay="300">
+        <div class="col-6 col-md-3">
+          <div class="metric-card dashboard-card">
             <div class="d-flex align-items-center justify-content-between">
               <div>
-                <h6 class="text-white-75 mb-1 small">Emergencies</h6>
-                <h3 class="fw-bold text-danger mb-0">{{ analytics.emergencies.total }}</h3>
-                <small class="text-warning">
-                  {{ analytics.emergencies.active }} Active | {{ analytics.emergencies.resolved }} Resolved
-                </small>
+                <h6 class="text-white-75 mb-1 small">Completed Consultations</h6>
+                <h3 class="fw-bold text-info mb-0">
+                  {{ analytics.completedConsultations }}
+                </h3>
               </div>
-              <i class="bi bi-exclamation-triangle-fill card-icon text-danger"></i>
+              <i class="bi bi-check-circle-fill card-icon text-info"></i>
             </div>
           </div>
         </div>
 
-        <!-- Revenue – Owner only -->
-        <div class="col-6 col-md-3 col-lg-3" *ngIf="role === 'owner'">
-          <div class="metric-card dashboard-card animate-on-scroll" data-delay="400">
+        <!-- Owner only -->
+        <div class="col-6 col-md-3" *ngIf="role === 'owner'">
+          <div class="metric-card dashboard-card">
             <div class="d-flex align-items-center justify-content-between">
               <div>
                 <h6 class="text-white-75 mb-1 small">Total Revenue</h6>
-                <h3 class="fw-bold text-info mb-0">₦{{ analytics.revenue.total | number:'1.0-0' }}</h3>
-                <small class="text-success">
-                  <i class="bi bi-arrow-up"></i> {{ analytics.revenue.growth }}% vs last month
-                </small>
+                <h3 class="fw-bold text-info mb-0">
+                  ₦{{ analytics.totalRevenue | number: '1.0-0' }}
+                </h3>
               </div>
               <i class="bi bi-currency-naira card-icon text-info"></i>
             </div>
           </div>
         </div>
 
-        <!-- Patient Metrics -->
-        <div class="col-6 col-md-3 col-lg-3" *ngIf="role === 'owner'">
-          <div class="metric-card dashboard-card animate-on-scroll" data-delay="500">
+        <div class="col-6 col-md-3" *ngIf="role === 'owner'">
+          <div class="metric-card dashboard-card">
             <div class="d-flex align-items-center justify-content-between">
               <div>
                 <h6 class="text-white-75 mb-1 small">Total Patients</h6>
-                <h3 class="fw-bold text-primary mb-0">{{ analytics.patients.total }}</h3>
-                <small class="text-success">
-                  {{ analytics.patients.newThisMonth }} new this month
-                </small>
+                <h3 class="fw-bold text-primary mb-0">
+                  {{ analytics.totalPatients }}
+                </h3>
               </div>
               <i class="bi bi-person-heart card-icon text-primary"></i>
             </div>
           </div>
         </div>
-
-        <!-- Specialist Performance -->
-        <div class="col-6 col-md-3 col-lg-3">
-          <div class="metric-card dashboard-card animate-on-scroll" data-delay="600">
-            <div class="d-flex align-items-center justify-content-between">
-              <div>
-                <h6 class="text-white-75 mb-1 small">Avg. Rating</h6>
-                <h3 class="fw-bold text-warning mb-0">{{ analytics.specialistPerformance.averageRating }}/5.0</h3>
-                <small>{{ analytics.specialistPerformance.totalReviews }} reviews</small>
-              </div>
-              <i class="bi bi-star-fill card-icon text-warning"></i>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <!-- Charts Section -->
+      <!-- Charts -->
       <div class="row g-4 mb-5">
+        <!-- Monthly Revenue (owner only) -->
         <div class="col-lg-6" *ngIf="showRevenueChart">
           <div class="dashboard-card chart-card">
             <h5 class="fw-bold text-white mb-4">
-              <i class="bi bi-graph-up-arrow me-2"></i>Monthly Revenue Trend
-              <small class="text-white-50 ms-2">(₦ {{ analytics.revenue.averageMonthly | number:'1.0-0' }} avg)</small>
+              <i class="bi bi-graph-up-arrow me-2"></i>
+              Monthly Revenue Trend
             </h5>
             <div class="chart-container">
-              <canvas baseChart [data]="lineChartData" [options]="lineChartOptions" [type]="lineChartType"></canvas>
+              <canvas
+                baseChart
+                [data]="lineChartData"
+                [options]="lineChartOptions"
+                [type]="lineChartType"
+              ></canvas>
             </div>
           </div>
         </div>
 
-        <div class="col-lg-6" *ngIf="showRevenueChart">
-          <div class="dashboard-card chart-card">
-            <h5 class="fw-bold text-white mb-4">
-              <i class="bi bi-pie-chart-fill me-2"></i>Revenue by Consultation Type
-            </h5>
-            <div class="chart-container">
-              <canvas baseChart [data]="revenuePieChartData" [options]="pieChartOptions" [type]="pieChartType"></canvas>
-            </div>
-          </div>
-        </div>
-
+        <!-- Specialist Distribution -->
         <div class="col-lg-6">
           <div class="dashboard-card chart-card">
             <h5 class="fw-bold text-white mb-4">
-              <i class="bi bi-pie-chart-fill me-2"></i>Specialist Distribution
+              <i class="bi bi-pie-chart-fill me-2"></i>
+              Specialist Distribution
               <small class="text-white-50 ms-2">by Specialty</small>
             </h5>
             <div class="chart-container">
-              <canvas baseChart [data]="pieChartData" [options]="pieChartOptions" [type]="pieChartType"></canvas>
+              <canvas
+                baseChart
+                [data]="pieChartData"
+                [options]="pieChartOptions"
+                [type]="pieChartType"
+              ></canvas>
             </div>
           </div>
         </div>
 
+        <!-- Consultation Status -->
         <div class="col-lg-6">
           <div class="dashboard-card chart-card">
             <h5 class="fw-bold text-white mb-4">
-              <i class="bi bi-bar-chart-fill me-2"></i>Consultation Status
+              <i class="bi bi-bar-chart-fill me-2"></i>
+              Consultation Status
             </h5>
             <div class="chart-container">
-              <canvas baseChart [data]="consultationStatusData" [options]="barChartOptions" [type]="barChartType"></canvas>
+              <canvas
+                baseChart
+                [data]="consultationStatusData"
+                [options]="barChartOptions"
+                [type]="barChartType"
+              ></canvas>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Detailed Tables Section -->
+      <!-- Tables -->
       <div class="row g-4">
         <!-- Top Specialists -->
         <div class="col-lg-12">
           <div class="dashboard-card">
             <h5 class="fw-bold text-white mb-4">
-              <i class="bi bi-trophy-fill me-2 text-warning"></i>Top Performing Specialists
+              <i class="bi bi-trophy-fill me-2 text-warning"></i>
+              Top Performing Specialists
             </h5>
             <div class="table-responsive">
-              <table class="table table-dark table-hover">
+              <table class="table table-dark table-hover mb-0">
                 <thead>
                   <tr class="text-primary">
                     <th>Specialist</th>
@@ -217,10 +212,16 @@
                     <td>{{ specialist.consultations }}</td>
                     <td>
                       <span class="text-warning">
-                        {{ specialist.rating }} <i class="bi bi-star-fill"></i>
+                        {{ specialist.rating }}
+                        <i class="bi bi-star-fill"></i>
                       </span>
                     </td>
-                    <td>₦{{ specialist.revenue | number:'1.0-0' }}</td>
+                    <td>₦{{ specialist.revenue | number: '1.0-0' }}</td>
+                  </tr>
+                  <tr *ngIf="!analytics.topSpecialists?.length">
+                    <td colspan="5" class="text-center text-white-50 py-4">
+                      No specialist data yet
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -228,14 +229,15 @@
           </div>
         </div>
 
-        <!-- Recent Emergency Requests -->
+        <!-- Recent Emergencies -->
         <div class="col-lg-12">
           <div class="dashboard-card">
             <h5 class="fw-bold text-white mb-4">
-              <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>Recent Emergency Requests
+              <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>
+              Recent Emergency Requests
             </h5>
             <div class="table-responsive">
-              <table class="table table-dark table-hover">
+              <table class="table table-dark table-hover mb-0">
                 <thead>
                   <tr class="text-danger">
                     <th>Location</th>
@@ -247,17 +249,42 @@
                 </thead>
                 <tbody>
                   <tr *ngFor="let emergency of analytics.recentEmergencies">
-                    <td>{{ emergency.location }}</td>
-                    <td>{{ emergency.type }}</td>
+                    <td>{{ emergency.location || '—' }}</td>
+                    <td>{{ emergency.type || '—' }}</td>
                     <td>
-                      <span class="badge" [ngClass]="emergency.status === 'active' ? 'bg-danger' : 'bg-success'">
+                      <span
+                        class="badge"
+                        [ngClass]="
+                          emergency.status === 'active' ||
+                          emergency.status === 'pending'
+                            ? 'bg-danger'
+                            : 'bg-success'
+                        "
+                      >
                         {{ emergency.status }}
                       </span>
                     </td>
                     <td>
-                      <i class="bi" [ngClass]="emergency.ambulanceDispatched ? 'bi-check-circle-fill text-success' : 'bi-x-circle-fill text-danger'"></i>
+                      <i
+                        class="bi"
+                        [ngClass]="
+                          emergency.ambulanceDispatched
+                            ? 'bi-check-circle-fill text-success'
+                            : 'bi-x-circle-fill text-danger'
+                        "
+                      ></i>
                     </td>
-                    <td>{{ emergency.reportedAt | date:'shortTime' }}</td>
+                    <td>
+                      {{
+                        (emergency.reportedAt || emergency.createdAt)
+                          | date: 'short'
+                      }}
+                    </td>
+                  </tr>
+                  <tr *ngIf="!analytics.recentEmergencies?.length">
+                    <td colspan="5" class="text-center text-white-50 py-4">
+                      No recent emergencies
+                    </td>
                   </tr>
                 </tbody>
               </table>
@@ -265,49 +292,39 @@
           </div>
         </div>
 
-        <!-- Consultation Summary -->
+        <!-- Simple Consultation Summary (only real numbers) -->
         <div class="col-12">
           <div class="dashboard-card">
             <h5 class="fw-bold text-white mb-4">
-              <i class="bi bi-calendar-check me-2 text-info"></i>Consultation Summary
+              <i class="bi bi-calendar-check me-2 text-info"></i>
+              Consultation Summary
             </h5>
             <div class="row g-4">
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="summary-card text-center p-3">
-                  <div class="summary-value text-info">{{ analytics.consultationSummary.total }}</div>
-                  <div class="summary-label">Total Consultations</div>
+                  <div class="summary-value text-info">
+                    {{
+                      (analytics.completedConsultations || 0) +
+                        (analytics.activeConsultations || 0)
+                    }}
+                  </div>
+                  <div class="summary-label">Total (Completed + Active)</div>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="summary-card text-center p-3">
-                  <div class="summary-value text-success">{{ analytics.consultationSummary.completed }}</div>
+                  <div class="summary-value text-success">
+                    {{ analytics.completedConsultations }}
+                  </div>
                   <div class="summary-label">Completed</div>
                 </div>
               </div>
-              <div class="col-md-3">
+              <div class="col-md-4">
                 <div class="summary-card text-center p-3">
-                  <div class="summary-value text-warning">{{ analytics.consultationSummary.pending }}</div>
-                  <div class="summary-label">Pending</div>
-                </div>
-              </div>
-              <div class="col-md-3">
-                <div class="summary-card text-center p-3">
-                  <div class="summary-value text-danger">{{ analytics.consultationSummary.cancelled }}</div>
-                  <div class="summary-label">Cancelled</div>
-                </div>
-              </div>
-            </div>
-            
-            <!-- Specialty Breakdown -->
-            <div class="mt-4">
-              <h6 class="text-white-75 mb-3">Consultations by Specialty</h6>
-              <div *ngFor="let specialty of analytics.consultationBySpecialty" class="mb-2">
-                <div class="d-flex justify-content-between align-items-center">
-                  <span>{{ specialty.name }}</span>
-                  <span>{{ specialty.count }} consultations</span>
-                </div>
-                <div class="progress" style="height: 8px;">
-                  <div class="progress-bar bg-info" [style.width.%]="specialty.percentage"></div>
+                  <div class="summary-value text-primary">
+                    {{ analytics.activeConsultations }}
+                  </div>
+                  <div class="summary-label">Active / Ongoing</div>
                 </div>
               </div>
             </div>

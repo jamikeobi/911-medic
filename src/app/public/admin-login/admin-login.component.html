@@ -1,0 +1,139 @@
+
+
+<!-- Specialist Login (matches other auth pages) -->
+<div class="login-page min-vh-100 position-relative overflow-hidden text-light">
+  <div class="login-bg"></div>
+
+  <div class="container position-relative z-3 py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-6 col-xl-5">
+        <div class="login-card animate-on-scroll">
+          <h2 class="fw-bold text-center mb-4 text-white">Admin Login</h2>
+          <p class="text-center text-white-75 mb-4">
+            Sign in to manage patients, specialists, and others features.
+          </p>
+
+          <!-- Success / Error (modal pop-ups) -->
+          <!-- Success Modal -->
+          <div
+            *ngIf="successMessage"
+            class="modal d-block"
+            tabindex="-1"
+            role="dialog"
+            aria-modal="true"
+            style="background: rgba(0, 0, 0, 0.5)"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content text-center">
+                <div class="modal-header border-0">
+                  <h5 class="modal-title text-success">Success</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    aria-label="Close"
+                    (click)="closeSuccess()"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <p class="mb-0 text-dark">{{ successMessage }}</p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                  <button class="btn btn-success" (click)="closeSuccess()">
+                    OK
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Modal -->
+          <div
+            *ngIf="errorMessage"
+            class="modal d-block"
+            tabindex="-1"
+            role="dialog"
+            aria-modal="true"
+            style="background: rgba(0, 0, 0, 0.5)"
+          >
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content text-center">
+                <div class="modal-header border-0">
+                  <h5 class="modal-title text-danger">Error</h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    aria-label="Close"
+                    (click)="closeError()"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <p class="mb-0 text-dark">{{ errorMessage }}</p>
+                </div>
+                <div class="modal-footer border-0 justify-content-center">
+                  <button class="btn btn-danger" (click)="closeError()">
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <input
+                type="email"
+                class="form-control"
+                placeholder="Email Address *"
+                formControlName="email"
+                [class.is-invalid]="submitted && f['email'].errors"
+              />
+              <div
+                *ngIf="submitted && f['email'].errors"
+                class="invalid-feedback"
+              >
+                Valid email required.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <input
+                type="password"
+                class="form-control"
+                placeholder="Password *"
+                formControlName="password"
+                [class.is-invalid]="submitted && f['password'].errors"
+              />
+              <div
+                *ngIf="submitted && f['password'].errors"
+                class="invalid-feedback"
+              >
+                Password required (min 8 characters).
+              </div>
+            </div>
+
+            <div class="text-center mt-4">
+              <button
+                type="submit"
+                class="btn btn-primary btn-lg px-5 py-3"
+                [disabled]="loginForm.invalid || isLoading"
+              >
+                <span
+                  *ngIf="isLoading"
+                  class="spinner-border spinner-border-sm me-2"
+                ></span>
+                {{ isLoading ? "Signing In..." : "Login" }}
+              </button>
+            </div>
+          </form>
+
+          <p class="text-center mt-4 text-white-75">
+            Don't have an account?
+            <a routerLink="/auth/specialist/register" class="text-primary"
+              >Sign Up</a
+            >
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

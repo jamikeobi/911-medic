@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/core/services/auth/auth.service'; // adjust path if needed
+import { LoginRequest } from 'src/app/core/models/auth/LoginRequest';
 
 @Component({
   selector: 'app-specialist-login',
@@ -13,13 +15,11 @@ export class SpecialistLoginComponent {
   isLoading = false;
   successMessage = '';
   errorMessage = '';
-  // simulate auth state (kept for template parity)
-  isLoggedIn = false;
-  userName = '';
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private authService: AuthService,
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -33,28 +33,40 @@ export class SpecialistLoginComponent {
 
   onSubmit() {
     this.submitted = true;
+    this.errorMessage = '';
+    this.successMessage = '';
+
     if (this.loginForm.invalid) return;
 
     this.isLoading = true;
-    this.errorMessage = '';
 
-    const payload = {
+    const payload: LoginRequest = {
       ...this.loginForm.value,
-      role: 'specialist', // backend login controller requires this
+      role: 'specialist',
     };
 
-    // TODO: call AuthService.login(payload) when APIs are ready
-    console.log('Login payload:', payload);
+    this.authService.login(payload).subscribe({
+      next: (res) => {
+        this.isLoading = false;
+        this.successMessage = res.message || 'Login successful! Redirecting...';
 
-    this.successMessage = 'Login successful! Redirecting...';
-    this.isLoading = false;
+        // AuthService already stored token + user in localStorage
+        // and updated currentUserSubject
 
-    setTimeout(() => {
-      this.router.navigate(['/specialist']);
-    }, 1500);
+        setTimeout(() => {
+          this.router.navigate(['/specialist']); // or '/specialist/dashboard'
+        }, 1200);
+      },
+      error: (err) => {
+        this.isLoading = false;
+        this.errorMessage =
+          err.error?.message ||
+          err.message ||
+          'Login failed. Please check your credentials.';
+      },
+    });
   }
 
-  // Close message handlers
   closeSuccess() {
     this.successMessage = '';
   }

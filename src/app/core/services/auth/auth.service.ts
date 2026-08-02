@@ -3,20 +3,17 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { User } from '../../models/auth/User';
+import { AuthResponse } from '../../models/auth/AuthResponse';
+import { PatientRegisterRequest } from '../../models/auth/PatientRegisterRequest';
+import { RegisterResponse } from '../../models/auth/RegisterResponse';
+import { SpecialistRegisterRequest } from '../../models/auth/SpecialistRegisterRequest';
+import { ForgotPasswordRequest } from '../../models/password/ForgotPasswordRequest';
+import { ResetPasswordRequest } from '../../models/password/ResetPasswordRequest';
+import { ChangePasswordRequest } from '../../models/password/ChangePasswordRequest';
+import { LoginRequest } from '../../models/auth/LoginRequest';
 
-export interface User {
-  _id: string;
-  fullName: string;
-  email: string;
-  phone: string;
-  role: 'patient' | 'specialist' | 'admin';
-}
 
-export interface AuthResponse {
-  status: string;
-  token: string;
-  data: { user: User };
-}
 
 @Injectable({
   providedIn: 'root',
@@ -56,8 +53,8 @@ export class AuthService {
   // Auth Methods
 
   // Login
-  login(email: string, password: string, role: string): Observable<AuthResponse>{
-    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, { email, password, role }).pipe(
+  login(data: LoginRequest): Observable<AuthResponse>{
+    return this.http.post<AuthResponse>(`${this.apiUrl}/login`, data).pipe(
       tap(res => { // this is to set the response token and user as values in the local storage and update the current user state
         localStorage.setItem('token', res.token); // this is to set the response token as a value under key "token" in the local storage
         localStorage.setItem('user', JSON.stringify(res.data.user));
@@ -68,15 +65,38 @@ export class AuthService {
 
 
   // Register Patients
-  registerPatients(data: any): Observable<any>{
-    return this.http.post(`${this.apiUrl}/patient/register`, data); // this is to send a post request to the backend to register a patient
+  registerPatients(data: PatientRegisterRequest): Observable<RegisterResponse>{
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/patient/register`, data); // this is to send a post request to the backend to register a patient
+  }
+
+  // Register Specialists
+  registerSpecialists(data: SpecialistRegisterRequest | FormData): Observable<RegisterResponse>{
+    return this.http.post<RegisterResponse>(`${this.apiUrl}/specialist/register`, data); // this is to send a post request to the backend to register a specialist
+  }
+
+  // Forgot Password
+  forgotPassword(data: ForgotPasswordRequest): Observable<{ status: string, message: string }>{
+    return this.http.post<{ status: string, message: string }>(`${this.apiUrl}/forgot-password`, data); // this is to send a post request to the backend to initiate the forgot password process
+  }
+
+  // Reset Password
+  resetPassword(token: string, data: ResetPasswordRequest): Observable<{ status: string, message: string }>{
+    return this.http.post<{ status: string, message: string }>(`${this.apiUrl}/reset-password/${token}`, { token, data }); // this is to send a post request to the backend to reset the password
+  }
+
+  // change Password
+  changePassword(data: ChangePasswordRequest): Observable<{ status: string, message: string }>{
+    return this.http.patch<{ status: string, message: string }>(`${this.apiUrl}/change-password`, data ); // this is to send a post request to the backend to change the password
   }
 
 
-  registerSpecialists(data: FormData): Observable<any>{
-    return this.http.post(`${this.apiUrl}/specialist/register`, data); // this is to send a post request to the backend to register a specialist
+  // Logout
+  logout(): void{
+    localStorage.removeItem('token'); // remove the token from local storage
+    localStorage.removeItem('user'); // remove the user from local storage
+    this.currentUserSubject.next(null); // set the current user state to null
+    this.router.navigate(['/login']); // navigate to the login page
   }
-  
 
 
 

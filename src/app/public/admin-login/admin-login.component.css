@@ -1,0 +1,206 @@
+.login-page {
+    background: #0a1f44;
+}
+
+.login-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0d6efd 0%, #c0392b 50%, #0d6efd 100%);
+    opacity: 0.15;
+    z-index: 1;
+}
+
+.login-card {
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+.form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.invalid-feedback {
+    color: #dc3545;
+}
+
+.modal-title {
+    color: #0d6efd !important;
+}
+
+.btn-success {
+    background-color: #0d6efd !important;
+    border-color: #0a1f44 !important;
+}
+
+
+/* ================================
+   TOP EMERGENCY BAR
+================================ */
+.top-bar {
+    background: #0d6efd;
+    /* light grey */
+    font-size: 14px;
+}
+
+.emergency-text {
+    font-weight: 600;
+    color: #c0392b;
+    /* emergency red */
+    display: flex;
+    align-items: center;
+}
+
+/* Social Icons */
+.social-icons a {
+    color: #555;
+    margin-left: 12px;
+    font-size: 16px;
+    transition: all 0.3s ease;
+}
+
+.social-icons a:hover {
+    color: #dc3545;
+    /* Bootstrap primary blue */
+    transform: translateY(-2px);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 576px) {
+    .top-bar {
+        font-size: 12px;
+    }
+
+    .social-icons a {
+        margin-left: 8px;
+        font-size: 14px;
+    }
+}
+
+/* ================================
+   NAVBAR HOVER EFFECT
+================================ */
+.navbar .nav-link {
+    position: relative;
+    font-weight: 500;
+    color: #444;
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    left: 50%;
+    bottom: -6px;
+    background-color: #0d6efd;
+    /* Bootstrap blue */
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.navbar .nav-link:hover {
+    color: #0d6efd;
+}
+
+.navbar .nav-link:hover::after {
+    width: 100%;
+}
+
+/* Active route */
+.navbar .nav-link.active {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+/* PREMIUM FOOTER */
+.premium-footer {
+    background: #0a1f44;
+    /* Dark premium base */
+    position: relative;
+}
+
+.footer-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #0d6efd 0%, #c0392b 50%, #0d6efd 100%);
+    opacity: 0.12;
+    z-index: 1;
+}
+
+.premium-footer .container {
+    z-index: 2;
+}
+
+.social-icons {
+    margin-top: 1.5rem;
+}
+
+.social-link {
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: #fff;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.social-link:hover {
+    background: rgba(13, 110, 253, 0.6);
+    transform: translateY(-3px);
+}
+
+.footer-links a,
+.footer-contact a {
+    color: #e0e0e0;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: block;
+    padding: 0.4rem 0;
+}
+
+.footer-links a:hover,
+.footer-contact a:hover {
+    color: #0d6efd;
+    padding-left: 8px;
+}
+
+.newsletter-form .form-control {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.newsletter-form .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.newsletter-form .btn-primary {
+    background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+    border: none;
+}
+
+.newsletter-form .btn-primary:hover {
+    background: linear-gradient(135deg, #0b5ed7, #0d6efd);
+    transform: translateY(-2px);
+}

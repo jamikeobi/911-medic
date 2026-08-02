@@ -16,8 +16,6 @@ import { HospitalBookingComponent } from './hospital-booking/hospital-booking.co
 @NgModule({
   declarations: [
     DashboardComponent,
-    PatientLoginComponent,
-    PatientRegisterComponent,
     ConsultationBookingComponent,
     AmbulanceRequestComponent,
     HospitalBookingComponent,

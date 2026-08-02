@@ -1,4 +1,4 @@
-<app-navbar></app-navbar>
+
 
 <div
   class="booking-page min-vh-100 position-relative overflow-hidden text-light"
@@ -245,27 +245,29 @@
               <h5 class="mt-5 mb-3">E. Payment Method</h5>
               <div class="col-12">
                 <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    formControlName="paymentMethod"
-                    value="bank-transfer"
-                    id="bank"
-                    (change)="onPaymentChange('bank-transfer')"
-                  />
+                  <!-- Bank Transfer -->
+<input
+  class="form-check-input"
+  type="radio"
+  formControlName="paymentMethod"
+  value="bank-transfer"
+  id="bank"
+  (change)="onPaymentMethodChange('bank-transfer')"
+/>
                   <label class="form-check-label" for="bank"
                     >Bank Transfer</label
                   >
                 </div>
                 <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="radio"
-                    formControlName="paymentMethod"
-                    value="paystack"
-                    id="paystack"
-                    (change)="onPaymentChange('paystack'); openPaymentModal()"
-                  />
+                  <!-- Paystack -->
+<input
+  class="form-check-input"
+  type="radio"
+  formControlName="paymentMethod"
+  value="paystack"
+  id="paystack"
+  (change)="onPaymentMethodChange('paystack'); openPaymentModal()"
+/>
                   <label
                     class="form-check-label"
                     for="paystack"
@@ -334,93 +336,23 @@
 </div>
 
 <!-- Payment Modal (Outside z-3 container for proper stacking) -->
-<div
-  class="modal fade"
-  id="paymentModal"
-  tabindex="-1"
-  aria-labelledby="paymentModalLabel"
-  aria-hidden="true"
->
+<!-- Replace the old payment modal with this -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content bg-dark text-light border border-primary">
       <div class="modal-header border-bottom border-primary">
-        <h5 class="modal-title" id="paymentModalLabel">
-          <i class="bi bi-credit-card me-2"></i> Complete Payment with Paystack
-        </h5>
-        <button
-          type="button"
-          class="btn-close btn-close-white"
-          data-bs-dismiss="modal"
-          aria-label="Close"
-        ></button>
+        <h5 class="modal-title">Complete Payment</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-      <div class="modal-body">
-        <form id="paymentForm">
-          <div class="mb-3">
-            <label class="form-label">Card Number</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="1234 5678 9012 3456"
-              maxlength="19"
-              value="4084084084084081"
-            />
-          </div>
-          <div class="row">
-            <div class="col-6 mb-3">
-              <label class="form-label">Expiry Date</label>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="MM/YY"
-                value="12/26"
-              />
-            </div>
-            <div class="col-6 mb-3">
-              <label class="form-label">CVV</label>
-              <input
-                type="text"
-                class="form-control"
-                placeholder="123"
-                maxlength="3"
-                value="123"
-              />
-            </div>
-          </div>
-          <div class="mb-3">
-            <label class="form-label">Cardholder Name</label>
-            <input
-              type="text"
-              class="form-control"
-              placeholder="John Doe"
-              value="Test User"
-            />
-          </div>
-
-          <!-- Success State (Hidden Initially) -->
-          <div id="paymentSuccess" class="text-center d-none">
-            <i
-              class="bi bi-check-circle-fill text-success"
-              style="font-size: 4rem"
-            ></i>
-            <h4 class="mt-3 text-success">Payment Successful!</h4>
-            <p>Your payment has been processed successfully.</p>
-          </div>
-
-          <!-- Pay Button -->
-          <div id="payButtonContainer">
-            <button
-              type="button"
-              class="btn btn-primary btn-lg w-100"
-              id="payButton"
-            >
-              Pay Now
-            </button>
-          </div>
-        </form>
+      <div class="modal-body p-4">
+        <app-payment-modal
+          [email]="currentUserEmail"
+          [amount]="getAmountForSpecialist(f['specialistId'].value)"
+          description="Consultation Payment"
+          (paymentSuccess)="onPaymentSuccess($event)"
+          (paymentClosed)="onPaymentClosed()">
+        </app-payment-modal>
       </div>
     </div>
   </div>
 </div>
-
-<app-footer></app-footer>

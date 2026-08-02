@@ -1,0 +1,29 @@
+<div class="payment-modal-overlay" *ngIf="!isSuccess">
+  <div class="payment-modal-card">
+    <h5 class="mb-1">Complete Payment</h5>
+    <p class="text-muted mb-4">{{ description }}</p>
+
+    <div class="amount-display mb-4">
+      <span class="currency">₦</span>
+      <span class="amount-value">{{ amount.toLocaleString() }}</span>
+    </div>
+
+    <p class="text-muted small mb-4">
+      Paying as: <strong>{{ email }}</strong>
+    </p>
+
+    <button
+      class="btn btn-primary w-100 py-3"
+      (click)="initiatePayment()"
+      [disabled]="isProcessing">
+      <span *ngIf="isProcessing" class="spinner-border spinner-border-sm me-2"></span>
+      {{ isProcessing ? 'Processing...' : 'Pay Now' }}
+    </button>
+  </div>
+</div>
+
+<div class="payment-success" *ngIf="isSuccess">
+  <div class="success-icon">✓</div>
+  <h5>Payment Successful</h5>
+  <p class="text-muted">Ref: {{ reference }}</p>
+</div>

@@ -1,9 +1,12 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component, AfterViewInit, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { PaystackService } from 'src/app/core/services/paystack/paystack.service';
+import {
+  ConsultationService
+} from 'src/app/core/services/consultation/consultation.service';
+import { AuthService } from 'src/app/core/services/auth/auth.service';
+import { BookConsultationRequest } from 'src/app/core/models/consultation/BookConsultationRequest';
 
-// Declare bootstrap as global (from Bootstrap JS CDN)
 declare var bootstrap: any;
 
 @Component({
@@ -11,34 +14,44 @@ declare var bootstrap: any;
   templateUrl: './consultation-booking.component.html',
   styleUrls: ['./consultation-booking.component.css'],
 })
-export class ConsultationBookingComponent implements AfterViewInit {
+export class ConsultationBookingComponent implements OnInit, AfterViewInit {
   bookingForm: FormGroup;
   submitted = false;
   isLoading = false;
   successMessage = '';
+  errorMessage = '';
   paymentMethod = '';
-  paymentCompleted = false; // Tracks if Paystack payment was completed
+  paymentCompleted = false;
+  paymentReference = '';
+  currentUserEmail = '';
+
+  // Specialist ID map — in production this comes from the specialists API
+  // For now mapped from the dropdown values
+  specialistIdMap: { [key: string]: string } = {};
 
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private paystackService: PaystackService,
+    private consultationService: ConsultationService,
+    private authService: AuthService,
   ) {
     this.bookingForm = this.fb.group({
-      fullName: ['', [Validators.required, Validators.minLength(2)]],
-      phone: [
+      patientName: ['', [Validators.required, Validators.minLength(2)]],
+      patientPhone: [
         '',
         [Validators.required, Validators.pattern('^[+]?[0-9]{10,15}$')],
       ],
-      email: ['', [Validators.required, Validators.email]],
+      patientEmail: ['', [Validators.required, Validators.email]],
       age: ['', [Validators.required, Validators.min(1)]],
       gender: ['', Validators.required],
       location: ['', Validators.required],
       forWhom: ['self', Validators.required],
       otherPerson: [''],
       consultationType: ['', Validators.required],
-      specialist: ['', Validators.required],
+      specialistId: ['', Validators.required],
+      specialty: [''],
       timeframe: ['', Validators.required],
+      description: [''],
       paymentMethod: ['', Validators.required],
       receipt: [null],
     });
@@ -48,42 +61,22 @@ export class ConsultationBookingComponent implements AfterViewInit {
     return this.bookingForm.controls;
   }
 
-  ngAfterViewInit() {
-    this.setupPaymentModal();
-  }
-
-  setupPaymentModal() {
-    const payButton = document.getElementById('payButton') as HTMLButtonElement;
-
-    if (payButton) {
-      payButton.addEventListener('click', () => {
-        this.handlePaystackPayment();
+  ngOnInit(): void {
+    // Pre-fill patient info from logged-in user
+    const user = this.authService.currentUser;
+    if (user) {
+      this.currentUserEmail = user.email;
+      this.bookingForm.patchValue({
+        patientName: user.fullName,
+        patientEmail: user.email,
+        patientPhone: user.phone,
       });
     }
   }
 
-  handlePaystackPayment() {
-    const email = this.bookingForm.get('email')?.value;
-    const specialist = this.bookingForm.get('specialist')?.value;
+  ngAfterViewInit(): void {}
 
-    // Get amount based on selected specialist
-    const amount = this.getAmountForSpecialist(specialist);
-
-    // Generate unique reference
-    const reference = `911medic-${Date.now()}`;
-
-    // Call Paystack service
-    this.paystackService.initiatePayment(
-      email,
-      amount,
-      reference,
-      (response) => this.onPaymentSuccess(response), // Success callback
-      () => this.onPaymentClose(), // Close callback
-    );
-  }
-
-  // Map specialist to amount
-  getAmountForSpecialist(specialist: string): number {
+  getAmountForSpecialist(specialistKey: string): number {
     const priceMap: { [key: string]: number } = {
       'cardiologist-online': 15000,
       'dermatologist-online': 15000,
@@ -98,97 +91,100 @@ export class ConsultationBookingComponent implements AfterViewInit {
       'pediatrician-physical': 30000,
       'gynecologist-physical': 30000,
     };
-    return priceMap[specialist] || 0;
+    return priceMap[specialistKey] || 0;
   }
 
-  onPaymentSuccess(response: any) {
-    // response contains: reference, status, trans (transaction object)
-    console.log('Payment successful:', response);
+  onPaymentMethodChange(method: string): void {
+    this.paymentMethod = method;
+    if (method !== 'paystack') {
+      this.paymentCompleted = false;
+      this.paymentReference = '';
+    }
+  }
+
+  // Called by app-payment-modal (click)="paymentSuccess.emit(...)"
+  onPaymentSuccess(result: any): void {
     this.paymentCompleted = true;
+    this.paymentReference = result.reference;
 
-    // Show success UI
-    const paymentSuccess = document.getElementById('paymentSuccess');
-    const payButtonContainer = document.getElementById('payButtonContainer');
-
-    payButtonContainer?.classList.add('d-none');
-    paymentSuccess?.classList.remove('d-none');
-
-    // Close modal after 3 seconds
-    setTimeout(() => {
-      const modalElement = document.getElementById('paymentModal');
-      const modal = bootstrap.Modal.getInstance(modalElement);
-      modal?.hide();
-    }, 3000);
+    // Close modal
+    const modalEl = document.getElementById('paymentModal');
+    const modal = bootstrap.Modal.getInstance(modalEl);
+    modal?.hide();
   }
 
-  onPaymentClose() {
-    console.log('Payment window closed');
-    // User closed the payment modal
+  onPaymentClosed(): void {
+    console.log('Payment window closed by user');
   }
-  onSubmit() {
+
+  onSubmit(): void {
     this.submitted = true;
     this.bookingForm.markAllAsTouched();
-
     if (this.bookingForm.invalid) return;
 
-    // Require Paystack payment completion
     if (this.paymentMethod === 'paystack' && !this.paymentCompleted) {
-      alert('Please complete the payment using Paystack before submitting.');
+      this.errorMessage =
+        'Please complete the Paystack payment before submitting.';
       return;
     }
 
     this.isLoading = true;
+    this.errorMessage = '';
 
-    setTimeout(() => {
-      // Save booking to localStorage for specialist dashboard
-      const booking = {
-        id: Date.now(),
-        ...this.bookingForm.value,
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-      };
+    const val = this.bookingForm.value;
+    const specialistKey = val.specialistId;
+    const amount = this.getAmountForSpecialist(specialistKey);
 
-      const bookings = JSON.parse(localStorage.getItem('bookings') || '[]');
-      bookings.push(booking);
-      localStorage.setItem('bookings', JSON.stringify(bookings));
+    // Extract specialty from the specialist key
+    const specialty = specialistKey.split('-')[0];
 
-      this.successMessage = 'Booking successful! Details sent to your email.';
-      this.isLoading = false;
+    const payload: BookConsultationRequest = {
+      specialistId: val.specialistId, // In real app, this is a MongoDB ObjectId from specialists API
+      patientName: val.patientName,
+      patientEmail: val.patientEmail,
+      patientPhone: val.patientPhone,
+      age: val.age,
+      gender: val.gender,
+      location: val.location,
+      forWhom: val.forWhom,
+      otherPerson: val.otherPerson || undefined,
+      consultationType: val.consultationType,
+      specialty,
+      timeframe: val.timeframe,
+      description: val.description || undefined,
+      amount,
+      paymentMethod: val.paymentMethod,
+      transactionRef: this.paymentReference || undefined,
+    };
 
-      setTimeout(() => {
-        this.router.navigate(['/patient']);
-      }, 4000);
-    }, 1500);
+    this.consultationService.bookConsultation(payload).subscribe({
+      next: () => {
+        this.isLoading = false;
+        this.successMessage =
+          'Booking successful! You will receive a confirmation email shortly.';
+        setTimeout(() => this.router.navigate(['/patient/dashboard']), 3000);
+      },
+      error: (err) => {
+        this.errorMessage =
+          err.error?.message || 'Booking failed. Please try again.';
+        this.isLoading = false;
+      },
+    });
   }
 
-  onPaymentChange(method: string) {
-    this.paymentMethod = method;
-    // Only reset if switching away from paystack
-    if (method !== 'paystack') {
-      this.paymentCompleted = false;
-    }
-  }
-
-  openPaymentModal() {
+  openPaymentModal(): void {
     setTimeout(() => {
-      const modalElement = document.getElementById('paymentModal');
-      if (modalElement) {
-        // Remove any existing modal instance
-        const existingModal = bootstrap.Modal.getInstance(modalElement);
-        if (existingModal) {
-          existingModal.dispose();
-        }
-        // Create new modal with simple config
-        const modal = new bootstrap.Modal(modalElement);
-        modal.show();
+      const modalEl = document.getElementById('paymentModal');
+      if (modalEl) {
+        const existing = bootstrap.Modal.getInstance(modalEl);
+        existing?.dispose();
+        new bootstrap.Modal(modalEl).show();
       }
     }, 0);
   }
 
-  onReceiptUpload(event: any) {
+  onReceiptUpload(event: any): void {
     const file = event.target.files[0];
-    if (file) {
-      this.bookingForm.patchValue({ receipt: file });
-    }
+    if (file) this.bookingForm.patchValue({ receipt: file });
   }
 }

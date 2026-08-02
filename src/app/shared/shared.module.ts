@@ -6,12 +6,16 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { FooterComponent } from './footer/footer.component';
 import { EmergencyBannerComponent } from './emergency-banner/emergency-banner.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoadingSpinnerComponent } from './loading-spinner/loading-spinner.component';
+import { PaymentModalComponent } from './payment-modal/payment-modal.component';
 
 @NgModule({
   declarations: [
     NavbarComponent,
     FooterComponent,
-    EmergencyBannerComponent
+    EmergencyBannerComponent,
+    LoadingSpinnerComponent,
+    PaymentModalComponent
   ],
   imports: [
     CommonModule,
@@ -19,13 +23,16 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     FormsModule,
     ReactiveFormsModule
   ],
-  exports: [   // <-- THIS IS THE FIX
+  exports: [
     NavbarComponent,
     FooterComponent,
     EmergencyBannerComponent,
+    LoadingSpinnerComponent,
+    PaymentModalComponent,
     CommonModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    RouterModule
   ]
 })
 export class SharedModule { }
